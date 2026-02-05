@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Llama Project</title>
+  </head>
+  <body>
+    <h1>Llama Project</h1>
+    <form action="/prompt" method="post">
+      <textarea name="prompt" rows="4" cols="50"></textarea>
+      <br>
+      <input type="submit" value="Submit">
+    </form>
+    <hr>
+    <div>
+      <h2>Response:</h2>
+      <pre id="response"></pre>
+    </div>
+    <script>
+      const form = document.querySelector('form');
+      const responseEl = document.querySelector('#response');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const prompt = form.elements.prompt.value;
+        responseEl.textContent = 'Loading...';
+
+        try {
+          const response = await fetch('/prompt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt }),
+          });
+          const data = await response.json();
+          responseEl.textContent = data.response;
+        } catch (error) {
+          responseEl.textContent = 'Error: ' + error.message;
+        }
+      });
+    </script>
+  </body>
+</html>
